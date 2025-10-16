@@ -1,0 +1,19 @@
+# POC 專案：只排除真正敏感的檔案
+.env.local
+.env.production
+
+# 依賴
+node_modules/
+
+# 建置輸出
+dist/
+build/
+
+# 日誌
+*.log
+
+# 系統檔案
+.DS_Store
+Thumbs.db
+
+# 注意：.env 檔案可以提交到 Git（POC 專案用測試值）

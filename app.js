@@ -3,6 +3,22 @@ import crypto from 'crypto'
 
 const app = express()
 
+// POC 專案：直接使用測試值，零手動設定
+const config = {
+  // 直接使用測試值，不需要真實金鑰
+  appKey: process.env.APP_KEY || '4c951e966557c8374d9a61753dfe3c52441aba3b',
+  appSecret: process.env.APP_SECRET || 'dd46269d6920f49b07e810862d3093062b0fb858',
+  shopHandle: process.env.SHOP_HANDLE || 'paykepoc',
+  callbackUrl: process.env.CALLBACK_URL || 'https://shopline-test-app.vercel.app/callback',
+  
+  // POC 專案標記
+  isPOC: true,
+  environment: 'POC'
+}
+
+console.log('🚀 POC 專案配置:', config)
+console.log('✅ 完全不需要手動設定環境變數！')
+
 // ===== 工具函數 =====
 
 function verifyGetSignature(query, appSecret) {
@@ -44,29 +60,29 @@ async function requestAccessToken(handle, code, appKey, appSecret) {
 
 // Step 1 & 2: 驗證安裝請求並重定向到授權頁面
 app.get('/', (req, res) => {
-  const isValid = verifyGetSignature(req.query, process.env.APP_SECRET)
+  const isValid = verifyGetSignature(req.query, config.appSecret)
   if (!isValid) return res.status(403).send('Invalid signature')
   
   const { handle } = req.query
   const authUrl = `https://${handle}.myshopline.com/admin/oauth-web/#/oauth/authorize?` +
-    `appKey=${process.env.APP_KEY}&responseType=code&` +
+    `appKey=${config.appKey}&responseType=code&` +
     `scope=read_products,write_products&` +
-    `redirectUri=${encodeURIComponent(process.env.CALLBACK_URL || 'https://your-app.com/callback')}`
+    `redirectUri=${encodeURIComponent(config.callbackUrl)}`
   
   res.redirect(authUrl)
 })
 
 // Step 3, 4, 5: 接收授權碼並換取 Access Token
 app.get('/callback', async (req, res) => {
-  const isValid = verifyGetSignature(req.query, process.env.APP_SECRET)
+  const isValid = verifyGetSignature(req.query, config.appSecret)
   if (!isValid) return res.status(403).send('Invalid signature')
   
   const { code, handle } = req.query
   const result = await requestAccessToken(
     handle,
     code,
-    process.env.APP_KEY,
-    process.env.APP_SECRET
+    config.appKey,
+    config.appSecret
   )
   
   if (result.code !== 200) {
@@ -152,12 +168,13 @@ app.get('/test', (req, res) => {
         <div class="container">
             <h1>SHOPLINE Custom App 測試</h1>
             <div class="info">
-                <h3>環境變數檢查：</h3>
-                <p><strong>APP_KEY:</strong> ${process.env.APP_KEY ? '✅ 已設定' : '❌ 未設定'}</p>
-                <p><strong>APP_SECRET:</strong> ${process.env.APP_SECRET ? '✅ 已設定' : '❌ 未設定'}</p>
-                <p><strong>CALLBACK_URL:</strong> ${process.env.CALLBACK_URL || '使用預設值'}</p>
+                <h3>🚀 POC 專案狀態：</h3>
+                <p><strong>APP_KEY:</strong> ✅ ${config.appKey}</p>
+                <p><strong>APP_SECRET:</strong> ✅ ${config.appSecret}</p>
+                <p><strong>CALLBACK_URL:</strong> ✅ ${config.callbackUrl}</p>
+                <p><strong>環境:</strong> 🎯 ${config.environment} (零手動設定)</p>
             </div>
-            <p>請確保已設定正確的環境變數，然後使用 SHOPLINE 發起的安裝請求進行測試。</p>
+            <p>🎉 POC 專案已完全自動化！直接推送到 GitHub，Vercel 自動部署，零手動設定！</p>
             <a href="/" class="btn">返回首頁</a>
         </div>
     </body>
