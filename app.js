@@ -182,8 +182,16 @@ app.get('/test', (req, res) => {
   `)
 })
 
+// Vercel 部署配置
 const PORT = process.env.PORT || 3000
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`)
-  console.log(`📝 測試頁面: http://localhost:${PORT}/test`)
-})
+
+// 只在非 Vercel 環境下啟動伺服器
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`)
+    console.log(`📝 測試頁面: http://localhost:${PORT}/test`)
+  })
+}
+
+// Vercel 需要導出 app
+export default app
