@@ -1,0 +1,27 @@
+{
+  "name": "shopline-custom-app",
+  "version": "1.0.0",
+  "description": "SHOPLINE Custom App 授權串接最小實作",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node app.js"
+  },
+  "keywords": [
+    "shopline",
+    "custom-app",
+    "oauth",
+    "authorization"
+  ],
+  "author": "dreamsprouts",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dreamsprouts/shopline-test-app.git"
+  },
+  "homepage": "https://shopline-test-app.vercel.app"
+}
